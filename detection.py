@@ -17,10 +17,10 @@ result = None
 def select_file():
     global filename
     filename = askopenfilename()
-    text_file.configure(state='normal')
-    text_file.delete('1.0','end')
-    text_file.insert('1.0',filename)
-    text_file.configure(state='disabled')
+    text_file.configure(state='normal') #Change file textbox to normal to enable writing 
+    text_file.delete('1.0','end') #Clean file textbox
+    text_file.insert('1.0',filename) #Update file textbox with the filename
+    text_file.configure(state='disabled') #Disable edit on file textbox
 
 def check_file():
     global conn
@@ -64,11 +64,9 @@ def get_report(filename, conn):
             'file':('filename', open(filename, 'rb'))
         }
     )
-    #label_submit_status.configure(text='Submitted: Success')
     return conn.get_report(response['report_id'])
-    #return report['is_malicious']
 
-def save_result():
+def save_result(): #Save result into a text file
     global result
     global filename
     if not result:
@@ -87,7 +85,7 @@ def save_result():
     text_result.insert('1.0', save_status)
     text_result.configure(state='disabled')
 
-def clear_text():
+def clear_text(): #Clear all textboxes
     global result
     global filename
     filename = None
@@ -105,19 +103,29 @@ root.title('Detection on Demand')
 button_frame = ttk.Frame(frame)
 button_frame.grid(column=0, row=2, sticky='W')
 
+
 text_file = tk.Text(frame, state='disabled', height=1)
 text_file.grid(column=0, row=0, columnspan=3, sticky='W', pady=5, ipadx=2, ipady=2)
-button_browse = ttk.Button(frame, text="Browse", command=select_file)
-button_browse.grid(column=3, row=0, sticky='W')
 
 text_result = tk.Text(frame, state='disabled')
 text_result.grid(column=0, row=1, columnspan=4, sticky='W', pady=10)
+
+#Adding Browse Button
+button_browse = ttk.Button(frame, text="Browse", command=select_file)
+button_browse.grid(column=3, row=0, sticky='W')
+
+
+
+#Adding Submit / Export / Clear / Close buttons
 button_submit = ttk.Button(button_frame, text='Submit', command=check_file)
 button_submit.grid(column=0, row=2, sticky='W')
+
 button_export = ttk.Button(button_frame, text='Export', command=save_result)
 button_export.grid(column=1, row=2, sticky='W')
+
 button_clear = ttk.Button(button_frame, text='Clear', command=clear_text)
 button_clear.grid(column=2, row=2, sticky='W')
+
 button_close = ttk.Button(frame, text='Close', command=root.destroy)
 button_close.grid(column=3, row=2, sticky='E')
 
