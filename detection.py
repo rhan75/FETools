@@ -12,11 +12,17 @@ API_KEY = config['secret']['API_KEY']
 filename = None
 result = None
 
-def insert_text(textbox, contents): #Change textbox from readonly to normal, clear, insert contents if exists, and disable edit
+def insert_text(textbox, contents, malicious): #Change textbox from readonly to normal, clear, insert contents if exists, and disable edit
     textbox.configure(state='normal')
     textbox.delete('1.0', 'end')
     if contents:
-        textbox.insert('1.0', contents)
+        if malicious:
+            textbox.tag_config('malicious', background='yellow', foreground='red', font=('Helvica', 30))
+            textbox.insert('1.0', 'Warning - Malicious\n', 'malicious')
+        else:
+            textbox.tag_config('benign', background='green', foreground='white', font=('Helvica', 30))
+            textbox.insert('1.0', 'Not Malicious\n', 'benign')
+        textbox.insert('2.0', contents)
     textbox.configure(state='disabled')
 
 def select_file(): #Select the file for testing
@@ -51,7 +57,7 @@ def check_file(): #Check for malicious code from a selected file, then get the r
             )
     else: 
         result = 'Failed - Select a file to submit first'
-    insert_text(text_result, result)
+    insert_text(text_result, result, report['is_malicious'])
         
 def get_report(filename, conn): #Submit filename and return the report
     response = conn.submit_file(
