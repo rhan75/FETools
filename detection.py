@@ -2,13 +2,13 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter.filedialog import askopenfilename
 import fireeyepy
-import configparser
+import toml
 import os
 from datetime import datetime
 
-config = configparser.ConfigParser()
-config.read('./config.ini')
-API_KEY = config['DEFAULT']['API_Key']
+config = toml.load('./config.toml')
+API_KEY = config['secret']['API_KEY']
+
 filename = None
 result = None
 
